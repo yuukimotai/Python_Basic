@@ -12,7 +12,7 @@ rules = {#辞書型
 }
 root = tk.Tk()
 
-class View():
+class View:
     def __init__(self):
         self.gu_image = Image.open('img/gu.png').convert('RGB').resize((100,100))
         self.gu_image = ImageTk.PhotoImage(self.gu_image)
@@ -51,8 +51,14 @@ class View():
         
         self.retry_btn = tk.Button(root, text="リトライ")
     def reset(self):
-      pass
-    def display(enemy, result):
+      self.retry_btn.place_forget()
+      self.gu_btn['state'] = tk.ACTIVE
+      self.choki_btn['state'] = tk.ACTIVE
+      self.pa_btn['state'] = tk.ACTIVE
+
+      self.enemy_label.configure(image=self.images[0])
+      self.text_label.configure(text="最初はグー、じゃんけん！")
+    def display(self, enemy, result):
       self.enemy_label.configure(image=self.images[enemy])
       if result == DRAW:
         self.text_label.configure(text="あいこ")
@@ -60,27 +66,33 @@ class View():
         self.text_label.configure(text="勝ち")
       else:
         self.text_label.configure(text="負け")
-         
-
+    def show_retry(self):
+      self.retry_btn.place(x=175, y=360)
+      self.gu_btn['state'] = tk.DISABLED
+      self.choki_btn['state'] = tk.DISABLED
+      self.pa_btn['state'] = tk.DISABLED
 
 class Application(tk.Frame):
-  def ___init__(self, master=None):
+  def __init__(self, master=None):
     super().__init__(master)
     master.geometry('420x400')
     master.title('じゃんけんゲーム')
 
     self.view = View()
 
-    self.view.gu_btn['command'] = lambda: self.judge(0)
+    self.view.gu_btn['command'] = lambda: self.judge(0) #commandにはlambda
     self.view.choki_btn['command'] = lambda: self.judge(1)
     self.view.pa_btn['command'] = lambda: self.judge(2)
 
-    def judge(self, my_hand):
-      enemy = random.randint(0,2)
-      result = rules[my_hand, enemy]
-      self.view.display()
-    def retry():
-      self.view.reset()
+    self.view.retry_btn['command'] = self.retry #丸括弧はいらない 関数を指定するだけ
 
+  def judge(self, my_hand):
+    enemy = random.randint(0,2)
+    result = rules[my_hand, enemy]
+    self.view.display(enemy, result)
+    if result != DRAW:
+      self.view.show_retry()
+  def retry(self):
+    self.view.reset()
 app = Application(master=root)
 app.mainloop()
