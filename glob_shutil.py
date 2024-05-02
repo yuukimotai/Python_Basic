@@ -7,3 +7,5 @@ import shutil as sh
 # sh.copy('sample_dir/sample_dir1/fff.txt', 'sample_dir')
 # copytree('コピー元', 'コピー先')　で対象のディレクトリの中身ごとコピーする
 # move('移動元', '移動先')　で移動
+# shutil make_archive()でもzip化ができる。第４引数を指定すると圧縮対象のディレクトリ指定できる
+# 
